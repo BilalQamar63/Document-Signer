@@ -163,7 +163,7 @@ export default function SignatureDialog({
       maxWidth="md"
     >
       <DialogTitle>
-        {isResigning ? "Change Signature" : "Draw your signature"}
+        {isResigning ? "Change Signature" : "Create Signature"}
       </DialogTitle>
 
       <DialogContent>
@@ -208,7 +208,7 @@ export default function SignatureDialog({
           variant="contained"
           disabled={!signatureDataUrl}
         >
-          {isResigning ? "Use New Signature" : "Use Signature"}
+          {isResigning ? "Replace Signature" : "Use Signature"}
         </Button>
       </Actions>
     </Dialog>
