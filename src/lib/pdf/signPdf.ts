@@ -32,7 +32,7 @@ export async function signPdf(
     page.drawImage(signatureImage, {
       x: field.x,
 
-    //   y: field.y - field.height,
+      //   y: field.y - field.height,
       y: field.y,
 
       width: field.width,

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -15,8 +16,10 @@ import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import SignatureCanvas from "./SignatureCanvas";
+import Image from "next/image";
 
-const CurrentSignature = styled("div")(({ theme }) => ({
+const CurrentSignature = styled(Box)(({ theme }) => ({
+  position: "relative",
   width: "100%",
   height: 96,
   display: "flex",
@@ -33,9 +36,11 @@ const CurrentSignature = styled("div")(({ theme }) => ({
   },
 }));
 
-const CurrentSignatureImage = styled("img")({
-  maxWidth: "90%",
-  maxHeight: "90%",
+const CurrentSignatureImage = styled(Image)({
+  position: "absolute",
+  inset: "5%",
+  width: "90%",
+  height: "90%",
   objectFit: "contain",
   display: "block",
 });
@@ -62,19 +67,7 @@ interface SignatureDialogProps {
   onClose: () => void;
 
   onComplete: (signatureDataUrl: string) => void;
-
-  /**
-   * True when the user is replacing
-   * an existing signature.
-   */
   isResigning?: boolean;
-
-  /**
-   * Existing signature image.
-   *
-   * Used only for displaying the current
-   * signature while re-signing.
-   */
   existingSignature?: string;
 }
 
@@ -87,70 +80,31 @@ export default function SignatureDialog({
 }: SignatureDialogProps) {
   const theme = useTheme();
   const isExtraSmall = useMediaQuery(theme.breakpoints.down("sm"));
-  /*
-   * Temporary signature being drawn
-   * inside the canvas.
-   *
-   * IMPORTANT:
-   *
-   * This is NOT written to the PDF until
-   * the user presses "Use Signature".
-   */
+  
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
 
-  /*
-   * Reset the temporary canvas state
-   * whenever the dialog opens.
-   *
-   * This is especially important for
-   * re-signing.
-   */
+  
   useEffect(() => {
     if (open) {
       setSignatureDataUrl(null);
     }
   }, [open]);
 
-  /*
-   * Close dialog.
-   *
-   * We intentionally do NOT modify the
-   * existing SignatureField here.
-   *
-   * Therefore:
-   *
-   * Re-sign → Cancel
-   *
-   * keeps the old signature.
-   */
+  
   function handleClose() {
     setSignatureDataUrl(null);
 
     onClose();
   }
 
-  /*
-   * Save the new signature.
-   */
+  
   function handleComplete() {
     if (!signatureDataUrl) {
       return;
     }
-
-    /*
-     * Parent updates the exact SignatureField.
-     *
-     * For normal signing:
-     * pending → signed
-     *
-     * For re-signing:
-     * old signature → new signature
-     */
     onComplete(signatureDataUrl);
 
-    /*
-     * Clear temporary dialog state.
-     */
+  
     setSignatureDataUrl(null);
   }
 
@@ -177,6 +131,7 @@ export default function SignatureDialog({
               <CurrentSignatureImage
                 src={existingSignature}
                 alt="Current signature"
+                fill
                 draggable={false}
               />
             </CurrentSignature>

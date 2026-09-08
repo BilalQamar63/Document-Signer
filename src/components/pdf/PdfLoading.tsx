@@ -1,12 +1,21 @@
+import { Box, styled } from "@mui/material";
+
 type PdfLoadingProps = {
   message?: string;
 };
 
+const PdfLoadingRoot = styled(Box)(({ theme }) => ({
+  minHeight: "100vh",
+  display: "grid",
+  placeItems: "center",
+  padding: theme.spacing(2),
+}));
+
 export function PdfLoading({ message = "Loading document..." }: PdfLoadingProps) {
   return (
-    <div style={{ display: "grid", placeItems: "center", minHeight: 240, color: "#4b5563", fontWeight: 600 }}>
-      <div>{message}</div>
-    </div>
+    <PdfLoadingRoot>
+      <Box>{message}</Box>
+    </PdfLoadingRoot>
   );
 }
 

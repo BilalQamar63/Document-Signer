@@ -15,9 +15,6 @@ export interface LabelLineMatch {
   score: number;
 }
 
-/**
- * Get approximate center of a text item.
- */
 function getTextCenter(item: PdfTextItem) {
   return {
     x: item.x + item.width / 2,
@@ -26,10 +23,6 @@ function getTextCenter(item: PdfTextItem) {
   };
 }
 
-/**
- * Determine whether a line is long enough
- * to be considered an input/signature line.
- */
 function isUsableInputLine(line: PdfLine): boolean {
   return (
     line.orientation === "horizontal" &&
@@ -37,17 +30,6 @@ function isUsableInputLine(line: PdfLine): boolean {
   );
 }
 
-/**
- * Match signature labels to nearby horizontal lines.
- *
- * Example:
- *
- * Signature:
- *
- * ─────────────────────
- *
- * becomes a strong candidate.
- */
 export function matchSignatureLabelsToLines(
   textItems: PdfTextItem[],
   lines: PdfLine[],
@@ -70,15 +52,6 @@ export function matchSignatureLabelsToLines(
         continue;
       }
 
-      /**
-       * A signature line normally appears
-       * below the label.
-       *
-       * PDF text coordinates can vary depending
-       * on how the extractor represents them,
-       * so we allow both nearby directions,
-       * but prefer below.
-       */
       const lineCenterX = (line.x1 + line.x2) / 2;
 
       const lineCenterY = (line.y1 + line.y2) / 2;
@@ -95,18 +68,8 @@ export function matchSignatureLabelsToLines(
         continue;
       }
 
-      /**
-       * Prefer lines that are:
-       *
-       * - below the label
-       * - horizontally aligned
-       * - long
-       */
       let score = 0;
 
-      /**
-       * Horizontal alignment.
-       */
       if (distanceX <= 30) {
         score += 30;
       } else if (distanceX <= 80) {
@@ -115,9 +78,6 @@ export function matchSignatureLabelsToLines(
         score += 10;
       }
 
-      /**
-       * Distance.
-       */
       if (distanceY <= 15) {
         score += 30;
       } else if (distanceY <= 30) {
@@ -126,10 +86,6 @@ export function matchSignatureLabelsToLines(
         score += 10;
       }
 
-      /**
-       * Longer lines are more likely to be
-       * form fields.
-       */
       if (line.length >= 200) {
         score += 20;
       } else if (line.length >= 120) {
@@ -138,9 +94,6 @@ export function matchSignatureLabelsToLines(
         score += 5;
       }
 
-      /**
-       * Avoid absurdly short lines.
-       */
       if (line.length < DETECTION_CONFIG.MIN_SIGNATURE_WIDTH) {
         score -= 20;
       }
@@ -168,9 +121,6 @@ export function matchSignatureLabelsToLines(
   return matches;
 }
 
-/**
- * Find the best signature line for one label.
- */
 export function findBestSignatureLine(
   label: PdfTextItem,
   lines: PdfLine[],
@@ -180,9 +130,6 @@ export function findBestSignatureLine(
   return matches[0] ?? null;
 }
 
-/**
- * Useful for debugging.
- */
 export function describeLabelLineMatch(match: LabelLineMatch): string {
   return [
     `Label: "${normalizeDetectionText(match.label.text)}"`,

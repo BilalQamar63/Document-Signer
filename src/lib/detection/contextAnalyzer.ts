@@ -18,29 +18,10 @@ export interface TextContextResult {
   reasons: string[];
 }
 
-/**
- * Normalize extracted PDF text.
- */
 export function normalizeDetectionText(text: string): string {
   return text.replace(/\s+/g, " ").trim().toLowerCase();
 }
 
-/**
- * Detect whether a text item is an actual signature label.
- *
- * Accepted:
- *
- * Signature:
- * Signature
- * Client Signature:
- * Applicant Signature:
- * Authorized Signature:
- *
- * Rejected:
- *
- * Digital Signature
- * Signatures mentioned inside a paragraph
- */
 export function isSignatureLabel(text: string): boolean {
   const normalized = normalizeDetectionText(text);
 
@@ -69,24 +50,12 @@ export function isSignatureLabel(text: string): boolean {
   return allowedLabels.some((label) => value === label);
 }
 
-/**
- * Detect a signature label that appears together
- * with an actual blank/underscore line in the text.
- *
- * Examples:
- *
- * Signature: ____________
- * Client Signature: ________
- */
+
 export function hasExplicitSignatureLine(text: string): boolean {
   const normalized = normalizeDetectionText(text);
 
   if (!isSignatureLabel(normalized)) {
-    /**
-     * The label might be combined with the line:
-     *
-     * Signature: __________________
-     */
+    
     const containsSignatureLabel = normalized.includes("signature:");
 
     if (!containsSignatureLabel) {
@@ -94,30 +63,18 @@ export function hasExplicitSignatureLine(text: string): boolean {
     }
   }
 
-  /**
-   * Some PDFs contain literal underscores.
-   */
+  
   const hasUnderscoreLine = /_{4,}/.test(text);
 
-  /**
-   * Some generated PDFs use repeated dashes.
-   */
+  
   const hasDashLine = /-{6,}/.test(text);
 
   return hasUnderscoreLine || hasDashLine;
 }
 
-/**
- * Detect Table of Contents / Index context.
- */
+
 export function isLikelyIndexEntry(text: string): boolean {
-  /**
-   * Examples:
-   *
-   * Signature ........ 12
-   * Signature........15
-   * Signature     12
-   */
+ 
 
   const hasDottedLeader = new RegExp(
     `\\.{${DETECTION_CONFIG.INDEX_DOTTED_LEADER_MIN_LENGTH},}`,
@@ -130,10 +87,7 @@ export function isLikelyIndexEntry(text: string): boolean {
   return hasDottedLeader && endsWithPageNumber;
 }
 
-/**
- * Detect whether the text itself looks like a
- * Table of Contents / Index heading.
- */
+
 export function isIndexHeading(text: string): boolean {
   const normalized = normalizeDetectionText(text);
 
@@ -144,13 +98,7 @@ export function isIndexHeading(text: string): boolean {
   );
 }
 
-/**
- * Detect explanatory "digital signature" text.
- *
- * Example:
- *
- * Digital signature verification is required...
- */
+
 export function isDigitalSignatureExplanation(text: string): boolean {
   const normalized = normalizeDetectionText(text);
 
@@ -158,11 +106,7 @@ export function isDigitalSignatureExplanation(text: string): boolean {
     return false;
   }
 
-  /**
-   * A standalone Digital Signature label
-   * may be meaningful, but explanatory sentences
-   * should not create a signing field.
-   */
+  
   const explanatoryWords = [
     "verification",
     "verify",
@@ -181,10 +125,7 @@ export function isDigitalSignatureExplanation(text: string): boolean {
   return explanatoryWords.some((word) => normalized.includes(word));
 }
 
-/**
- * Determine whether a text item looks like a
- * normal paragraph rather than a form label.
- */
+
 export function isNormalParagraph(text: string): boolean {
   const normalized = normalizeDetectionText(text);
 
@@ -192,9 +133,7 @@ export function isNormalParagraph(text: string): boolean {
     return false;
   }
 
-  /**
-   * Long sentences are generally paragraphs.
-   */
+  
   const wordCount = normalized.split(/\s+/).length;
 
   const hasSentencePunctuation = /[.!?]\s*$/.test(text);
@@ -206,9 +145,7 @@ export function isNormalParagraph(text: string): boolean {
   return false;
 }
 
-/**
- * Analyze one text item.
- */
+
 export function analyzeTextContext(
   item: PdfTextItem,
   nearbyItems: PdfTextItem[] = [],
@@ -227,9 +164,7 @@ export function analyzeTextContext(
 
   const paragraph = isNormalParagraph(text);
 
-  /**
-   * Look around the current item for TOC/index headings.
-   */
+  
   const nearbyIndexHeading = nearbyItems.some((candidate) => {
     const samePage = candidate.pageNumber === item.pageNumber;
 

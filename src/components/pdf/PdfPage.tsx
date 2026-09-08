@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
 import { styled } from "@mui/material/styles";
-
 import type { PDFPageProxy } from "pdfjs-dist";
-
 import type { SignatureField } from "@/types/signature";
-
 import { getSignaturePosition } from "@/lib/pdf/coordinateMapper";
+import { Box, Button } from "@mui/material";
+import Image from "next/image";
 
 interface PositionProps {
   left: number;
@@ -22,7 +20,7 @@ interface CanvasSizeProps {
   cssHeight?: number;
 }
 
-const PageSurface = styled("div")(({ theme }) => ({
+const PageSurface = styled(Box)(({ theme }) => ({
   position: "relative",
   display: "inline-block",
   maxWidth: "100%",
@@ -39,7 +37,7 @@ const PdfCanvas = styled("canvas", {
   maxWidth: "100%",
 }));
 
-const OverlayBox = styled("div", {
+const OverlayBox = styled(Box, {
   shouldForwardProp: (prop) =>
     !["left", "top", "width", "height"].includes(prop as string),
 })<PositionProps>(({ left, top, width, height }) => ({
@@ -50,9 +48,10 @@ const OverlayBox = styled("div", {
   height,
   zIndex: 20,
   overflow: "hidden",
+  display: "block",
 }));
 
-const MarkerButton = styled("button", {
+const MarkerButton = styled(Button, {
   shouldForwardProp: (prop) =>
     !["left", "top", "width", "height"].includes(prop as string),
 })<PositionProps>(({ theme, left, top, width, height }) => ({
@@ -80,15 +79,15 @@ const MarkerButton = styled("button", {
   },
 }));
 
-const SignatureImage = styled("img")({
-  width: "100%",
-  height: "100%",
+const SignatureImage = styled(Image)({
+  position: "absolute",
+  inset: 0,
   objectFit: "contain",
   display: "block",
   userSelect: "none",
 });
 
-const ResignButton = styled("button")(({ theme }) => ({
+const ResignButton = styled(Button)(({ theme }) => ({
   position: "absolute",
   right: 2,
   bottom: 2,
@@ -297,10 +296,11 @@ function SignatureOverlay({ field, viewport, onClick }: SignatureOverlayProps) {
         <SignatureImage
           src={field.signatureDataUrl}
           alt="Signed signature"
+          fill
           draggable={false}
         />
 
-        {/* Re-sign button */}
+        {/* Re-sign Button */}
         <ResignButton
           type="button"
           onClick={() => onClick(field)}

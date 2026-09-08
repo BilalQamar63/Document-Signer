@@ -20,15 +20,6 @@ export interface PdfFormField {
   raw?: unknown;
 }
 
-/**
- * Extract AcroForm annotations from the PDF.
- *
- * Important:
- *
- * A PDF can contain an actual signature widget.
- * That is much more reliable than guessing from
- * visible text.
- */
 export async function extractPdfFormFields(
   pdf: PDFDocumentProxy,
 ): Promise<PdfFormField[]> {
@@ -102,9 +93,6 @@ export async function extractPdfFormFields(
   return fields;
 }
 
-/**
- * Convenience helper.
- */
 export async function extractPdfSignatureFields(
   pdf: PDFDocumentProxy,
 ): Promise<PdfFormField[]> {

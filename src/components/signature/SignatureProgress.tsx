@@ -1,10 +1,11 @@
 "use client";
 
 import type { SignatureField } from "@/types/signature";
+import { Box } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
 
-const ProgressRoot = styled("div")(({ theme }) => ({
+const ProgressRoot = styled(Box)(({ theme }) => ({
   position: "sticky",
   top: 48,
   zIndex: 90,
@@ -16,7 +17,7 @@ const ProgressRoot = styled("div")(({ theme }) => ({
   },
 }));
 
-const ProgressContent = styled("div")(({ theme }) => ({
+const ProgressContent = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
@@ -28,13 +29,13 @@ const ProgressContent = styled("div")(({ theme }) => ({
   },
 }));
 
-const ProgressLabel = styled("div")(({ theme }) => ({
+const ProgressLabel = styled(Box)(({ theme }) => ({
   fontSize: 14,
   fontWeight: 600,
   color: theme.palette.text.primary,
 }));
 
-const ProgressTrack = styled("div")(({ theme }) => ({
+const ProgressTrack = styled(Box)(({ theme }) => ({
   width: "100%",
   height: 6,
   marginTop: theme.spacing(0.75),
@@ -43,14 +44,14 @@ const ProgressTrack = styled("div")(({ theme }) => ({
   overflow: "hidden",
 }));
 
-const ProgressFill = styled("div")(({ theme }) => ({
+const ProgressFill = styled(Box)(({ theme }) => ({
   height: "100%",
   background: theme.palette.primary.main,
   borderRadius: 999,
   transition: "width 200ms ease",
 }));
 
-const Percentage = styled("div")(({ theme }) => ({
+const Percentage = styled(Box)(({ theme }) => ({
   flexShrink: 0,
   fontSize: 13,
   color: theme.palette.text.secondary,

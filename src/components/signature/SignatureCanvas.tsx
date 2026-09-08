@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const CanvasRoot = styled("div")(({ theme }) => ({
+const CanvasRoot = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
   height: 180,
@@ -26,7 +26,7 @@ const DrawingCanvas = styled("canvas")({
   cursor: "crosshair",
 });
 
-const SignatureLine = styled("div")(({ theme }) => ({
+const SignatureLine = styled(Box)(({ theme }) => ({
   position: "absolute",
   left: theme.spacing(2),
   right: theme.spacing(2),
@@ -187,7 +187,7 @@ export default function SignatureCanvas({
   }
 
   return (
-    <div>
+    <Box>
       <CanvasRoot>
         <DrawingCanvas
           ref={canvasRef}
@@ -209,6 +209,6 @@ export default function SignatureCanvas({
       >
         Clear
       </Button>
-    </div>
+    </Box>
   );
 }

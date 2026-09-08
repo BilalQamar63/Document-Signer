@@ -4,19 +4,15 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import FitScreenIcon from "@mui/icons-material/FitScreen";
 import HeightIcon from "@mui/icons-material/Height";
-import { Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-/**
- * Preset zoom levels, expressed as a percentage
- * relative to the "fit width" baseline (100%).
- */
 export const ZOOM_LEVELS = [75, 90, 100, 125, 150, 175, 200] as const;
 
 export const MIN_ZOOM = ZOOM_LEVELS[0];
 export const MAX_ZOOM = ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
 
-const Root = styled("div")(({ theme }) => ({
+const Root = styled(Box)(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(0.5),
@@ -36,12 +32,7 @@ const PercentageLabel = styled(Typography)(({ theme }) => ({
 }));
 
 interface PdfZoomControlsProps {
-  /**
-   * Current zoom, as a percentage relative to
-   * the "fit width" baseline (100%).
-   */
   zoomPercentage: number;
-
   onZoomIn: () => void;
   onZoomOut: () => void;
   onFitWidth: () => void;

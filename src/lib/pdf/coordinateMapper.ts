@@ -13,29 +13,6 @@ export function getSignaturePosition(
   viewport: PageViewport,
   field: SignatureField,
 ): SignaturePosition {
-  /*
-   * PDF coordinates:
-   *
-   * bottom-left = origin
-   *
-   * PDF:
-   *
-   *       Y
-   *       ↑
-   *       │
-   *       │
-   *       └──────────→ X
-   *
-   * Browser/canvas coordinates:
-   *
-   *       ┌──────────→ X
-   *       │
-   *       │
-   *       ↓ Y
-   *
-   * PDF.js handles this conversion for us.
-   */
-
   const [x1, y1] = viewport.convertToViewportPoint(field.x, field.y);
 
   const [x2, y2] = viewport.convertToViewportPoint(

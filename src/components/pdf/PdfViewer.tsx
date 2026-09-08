@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-import { CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
+import { Box, CircularProgress, Typography } from "@mui/material";
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
-
 import { loadPdf } from "@/lib/pdf/pdfLoader";
 
 import type { SignatureField } from "@/types/signature";
@@ -18,23 +15,12 @@ import PdfZoomControls, {
   ZOOM_LEVELS,
 } from "./PdfZoomControls";
 
-/**
- * Zoom is expressed relative to the "fit width" baseline.
- *
- * "fit-width" -> always tracks the container width (100%).
- * "fit-page"  -> tracks the available viewport height.
- * "custom"    -> a fixed percentage the user picked via +/-.
- */
 type ZoomMode = "fit-width" | "fit-page" | "custom";
 
-/*
- * Rough vertical space already used by the sticky header,
- * zoom toolbar, and page padding. Used only to estimate a
- * sensible "fit page" scale; not pixel-perfect by design.
- */
+
 const FIT_PAGE_VERTICAL_ALLOWANCE = 220;
 
-const ViewerRoot = styled("div")(({ theme }) => ({
+const ViewerRoot = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -49,7 +35,7 @@ const ViewerRoot = styled("div")(({ theme }) => ({
   },
 }));
 
-const ZoomToolbar = styled("div")(({ theme }) => ({
+const ZoomToolbar = styled(Box)(({ theme }) => ({
   position: "sticky",
   top: 0,
   zIndex: 80,
@@ -60,7 +46,7 @@ const ZoomToolbar = styled("div")(({ theme }) => ({
   backgroundColor: "#e5e7eb",
 }));
 
-const LoadingState = styled("div")(({ theme }) => ({
+const LoadingState = styled(Box)(({ theme }) => ({
   minHeight: 240,
   display: "grid",
   placeItems: "center",
@@ -83,19 +69,7 @@ export default function PdfViewer({
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const [loading, setLoading] = useState(true);
-
-  /*
-   * "fitWidthScale" is the scale at which the first page's
-   * width matches the available container width. It is the
-   * 100% baseline that all zoom percentages are relative to.
-   */
   const [fitWidthScale, setFitWidthScale] = useState(1);
-
-  /*
-   * First page dimensions at scale 1, used to derive both
-   * fitWidthScale and fitPageScale without re-fetching the
-   * page on every resize/zoom change.
-   */
   const [basePageSize, setBasePageSize] = useState<{
     width: number;
     height: number;
@@ -132,10 +106,7 @@ export default function PdfViewer({
     };
   }, [file]);
 
-  /*
-   * Reset zoom whenever a new document is loaded so that a
-   * previous document's zoom level doesn't carry over.
-   */
+
   useEffect(() => {
     setZoomMode("fit-width");
     setZoomPercentage(100);
@@ -184,25 +155,17 @@ export default function PdfViewer({
     };
   }, [pdf]);
 
-  /*
-   * Effective render scale, derived from zoom mode.
-   *
-   * IMPORTANT: this is the single source of truth for the
-   * scale passed to every page. Because signature overlay
-   * position is recomputed from each page's live viewport
-   * (see coordinateMapper.ts), changing this value alone is
-   * enough to keep signatures perfectly aligned at any zoom.
-   */
+
   const scale =
     zoomMode === "fit-page" &&
-    basePageSize &&
-    basePageSize.height > 0 &&
-    typeof window !== "undefined"
+      basePageSize &&
+      basePageSize.height > 0 &&
+      typeof window !== "undefined"
       ? Math.max(
-          0.1,
-          (window.innerHeight - FIT_PAGE_VERTICAL_ALLOWANCE) /
-            basePageSize.height,
-        )
+        0.1,
+        (window.innerHeight - FIT_PAGE_VERTICAL_ALLOWANCE) /
+        basePageSize.height,
+      )
       : fitWidthScale * (zoomPercentage / 100);
 
   const effectiveZoomPercentage =
@@ -316,7 +279,7 @@ function PdfPageItem({
 
   if (!page) {
     return (
-      <div
+      <Box
         style={{
           width: "min(100%, 900px)",
           aspectRatio: "0.707",
